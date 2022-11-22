@@ -22,6 +22,7 @@ public class AddToDoActivity extends AppCompatActivity {
         DatePicker todoDate = findViewById(R.id.add_date);
         Button save = findViewById(R.id.add_save);
         Button cancel = findViewById(R.id.add_cancel);
+        this.setTitle("Add New Task");
 
 
         save.setOnClickListener(new View.OnClickListener() {

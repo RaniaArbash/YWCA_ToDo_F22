@@ -11,6 +11,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.YWCA_ToDo_F22">
         <activity
+            android:name=".RecyclerViewActivity"
+            android:exported="true" />
+        <activity
             android:name=".AddToDoActivity"
             android:exported="true" />
         <activity

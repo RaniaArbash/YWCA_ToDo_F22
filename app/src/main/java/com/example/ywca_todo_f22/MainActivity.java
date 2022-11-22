@@ -4,6 +4,7 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -11,6 +12,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -28,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ListView todoList = findViewById(R.id.todoList);
+        this.setTitle("ToDo App");
         addToDo = findViewById(R.id.addButton);
          adapter = new ToDoListBaseAdapter(
                 ((MyApp)getApplication()).getList(),
@@ -68,6 +73,29 @@ public class MainActivity extends AppCompatActivity {
                 showTheAlert(((MyApp)getApplication()).getList().get(i));
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+            super.onCreateOptionsMenu(menu);
+            MenuInflater mi = new MenuInflater(MainActivity.this);
+            mi.inflate(R.menu.todo_menu,menu);
+         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.toRecyclerView:
+                Intent recyclerViewIntent = new Intent(MainActivity.this,RecyclerViewActivity.class);
+                startActivity(recyclerViewIntent);
+
+                break;
+
+
+        }
+
+        return true;
     }
 
     void showTheAlert(ToDo td){

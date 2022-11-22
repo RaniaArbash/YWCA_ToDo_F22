@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">YWCA_ToDo_F22</string>
+    <string name="recycler_list">Recycler List</string>
 </resources>
