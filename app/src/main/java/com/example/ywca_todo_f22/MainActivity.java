@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
                 this);
         todoList.setAdapter(adapter);
 
+
         addToDo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -101,11 +102,11 @@ public class MainActivity extends AppCompatActivity {
     void showTheAlert(ToDo td){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        builder.setMessage("Did You Finish " + td.task +" ??");
+        builder.setMessage(R.string.alert_msg);
 
-        builder.setNegativeButton("No",null);
+        builder.setNegativeButton(R.string.alert_no,null);
 
-        builder.setPositiveButton("Yes",new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.alert_yes,new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 td.isCompleted = true;
                 adapter.list = ((MyApp)getApplication()).getList();
@@ -115,6 +116,10 @@ public class MainActivity extends AppCompatActivity {
         builder.create().show();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        adapter.notifyDataSetChanged();
 
-
+    }
 }

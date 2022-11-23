@@ -13,8 +13,14 @@ import java.util.ArrayList;
 public class ToDoListRecyclerAdapter extends
         RecyclerView.Adapter<ToDoListRecyclerAdapter.ToDoListViewHolder> {
 
+    interface itemCallBackInterface{
+        void onItemClicked(int pos);
+    }
+
     ArrayList<ToDo> list;
     Context context;
+    itemCallBackInterface listener;
+
 
     ToDoListRecyclerAdapter(ArrayList<ToDo> l, Context c){
         // step 1
@@ -39,6 +45,13 @@ public class ToDoListRecyclerAdapter extends
 
         holder.taskText.setText(list.get(position).task);
         holder.dateText.setText(list.get(position).task_date);
+//        holder.itemView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                listener.onItemClicked(position);
+//            }
+//        });
+
     }
 
     @Override
@@ -47,7 +60,8 @@ public class ToDoListRecyclerAdapter extends
         return list.size();
     }
 
-    class ToDoListViewHolder extends RecyclerView.ViewHolder{
+    class ToDoListViewHolder extends RecyclerView.ViewHolder
+           {
         ImageView imageView;
         TextView taskText;
         TextView dateText;
@@ -58,6 +72,13 @@ public class ToDoListRecyclerAdapter extends
              taskText = itemView.findViewById(R.id.rtodoTask);
              dateText = itemView.findViewById(R.id.rtodoDate);
 
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // no idea when the user will click this item
+                    listener.onItemClicked(getAdapterPosition());
+                }
+            });
 
         }
     }

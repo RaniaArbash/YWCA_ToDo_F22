@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">تطبيق المهام</string>
+    <string name="recycler_list">القائمة المُعاد تدويرها</string>
+    <string name="enter_a_new_task">أدخل المهمة الجديدة</string>
+    <string name="save">حفظ</string>
+    <string name="cancel">الغاء</string>
+    <string name="alert_msg">هل تريد حَفظ؟؟</string>
+    <string name="alert_no">كلا</string>
+    <string name="alert_yes">نعم</string>
+    <string name="title">قائمة المهام </string>
+</resources>
