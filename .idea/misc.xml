@@ -9,6 +9,7 @@
         <entry key="app/src/main/res/layout/activity_addtodo.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.11" />
         <entry key="app/src/main/res/layout/activity_recycler_view.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/addtodo_fragment.xml" value="0.1" />
         <entry key="app/src/main/res/layout/todo_list_recycler_row.xml" value="0.1" />
         <entry key="app/src/main/res/layout/todo_list_row.xml" value="0.165" />
         <entry key="app/src/main/res/menu/todo_menu.xml" value="0.1" />

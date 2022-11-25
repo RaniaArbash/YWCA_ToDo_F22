@@ -21,7 +21,8 @@ import android.widget.ListView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+        implements AddNewToDoFragment.FragmentListener {
 
     FloatingActionButton addToDo;
     ActivityResultLauncher<Intent> secondActivityLauncher;
@@ -44,8 +45,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                Intent toAddToDo = new Intent(MainActivity.this,AddToDoActivity.class);
-                secondActivityLauncher.launch(toAddToDo);
+                //Intent toAddToDo = new Intent(MainActivity.this,AddToDoActivity.class);
+              // secondActivityLauncher.launch(toAddToDo);
+            AddNewToDoFragment fragment =  new AddNewToDoFragment();
+            fragment.listener = MainActivity.this;
+            fragment.show(getSupportFragmentManager(),"");
+
+
             }
         });
         secondActivityLauncher = registerForActivityResult(
@@ -121,5 +127,12 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         adapter.notifyDataSetChanged();
 
+    }
+
+    @Override
+    public void saveNewToDo(ToDo newtodo) {
+        ((MyApp)getApplication()).addNewToDO(newtodo);
+        adapter.list = ((MyApp)getApplication()).getList();
+        adapter.notifyDataSetChanged();
     }
 }
