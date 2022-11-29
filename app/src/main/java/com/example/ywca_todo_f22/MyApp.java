@@ -9,7 +9,7 @@ public class MyApp extends Application {
     static int SaveCode = 1;
     static int CancelCode = 0;
 
-
+    FileStorageManager fileStorageManager = new FileStorageManager();
     private ArrayList<ToDo> listOfToDos;
 
 

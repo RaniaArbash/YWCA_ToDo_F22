@@ -38,6 +38,8 @@ public class MainActivity extends AppCompatActivity
          adapter = new ToDoListBaseAdapter(
                 ((MyApp)getApplication()).getList(),
                 this);
+        ((MyApp)getApplication()).fileStorageManager.readAllToDos(this);
+
         todoList.setAdapter(adapter);
 
 
@@ -62,6 +64,7 @@ public class MainActivity extends AppCompatActivity
                         if (result.getResultCode() == MyApp.SaveCode){
                             Intent resultIntent = result.getData();
                             ToDo newToDo =  resultIntent.getExtras().getParcelable("newtodo");
+                            ((MyApp)getApplication()).fileStorageManager.writeToDo(newToDo,MainActivity.this);
                             ((MyApp)getApplication()).addNewToDO(newToDo);
                             adapter.list = ((MyApp)getApplication()).getList();
                             adapter.notifyDataSetChanged();
@@ -132,6 +135,8 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void saveNewToDo(ToDo newtodo) {
         ((MyApp)getApplication()).addNewToDO(newtodo);
+        ((MyApp)getApplication()).fileStorageManager.writeToDo(newtodo,MainActivity.this);
+
         adapter.list = ((MyApp)getApplication()).getList();
         adapter.notifyDataSetChanged();
     }
