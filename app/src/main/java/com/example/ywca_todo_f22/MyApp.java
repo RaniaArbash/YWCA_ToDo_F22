@@ -17,8 +17,10 @@ public class MyApp extends Application {
         if (listOfToDos == null) {
             listOfToDos = new ArrayList<>(0);
         }
-
         return listOfToDos;
+    }
+    public void setList(ArrayList<ToDo> list){
+        listOfToDos = list;
     }
 
     public void addNewToDO(ToDo toadd){

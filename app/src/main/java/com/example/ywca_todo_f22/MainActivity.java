@@ -35,11 +35,14 @@ public class MainActivity extends AppCompatActivity
         ListView todoList = findViewById(R.id.todoList);
         this.setTitle("ToDo App");
         addToDo = findViewById(R.id.addButton);
-         adapter = new ToDoListBaseAdapter(
+
+        ((MyApp)getApplication()).setList(
+                ((MyApp)getApplication()).fileStorageManager.
+                        readAllToDos(this));
+
+        adapter = new ToDoListBaseAdapter(
                 ((MyApp)getApplication()).getList(),
                 this);
-        ((MyApp)getApplication()).fileStorageManager.readAllToDos(this);
-
         todoList.setAdapter(adapter);
 
 
@@ -101,7 +104,27 @@ public class MainActivity extends AppCompatActivity
                 startActivity(recyclerViewIntent);
 
                 break;
+            case R.id.deleteAllToDo:
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage("Are you sure you want to delete all tasks??");
+                builder.setNegativeButton(R.string.alert_no,null);
+                builder.setPositiveButton(R.string.alert_yes,new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
 
+                        ((MyApp)getApplication()).fileStorageManager.deleteAllToDos(MainActivity.this);
+                        ((MyApp)getApplication()).setList(
+                                ((MyApp)getApplication()).fileStorageManager.
+                                        readAllToDos(MainActivity.this));
+
+                        adapter.list = ((MyApp)getApplication()).getList();
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+                builder.create().show();
+
+
+
+                break;
 
         }
 
@@ -110,11 +133,8 @@ public class MainActivity extends AppCompatActivity
 
     void showTheAlert(ToDo td){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
         builder.setMessage(R.string.alert_msg);
-
         builder.setNegativeButton(R.string.alert_no,null);
-
         builder.setPositiveButton(R.string.alert_yes,new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 td.isCompleted = true;
@@ -124,6 +144,8 @@ public class MainActivity extends AppCompatActivity
         });
         builder.create().show();
     }
+
+
 
     @Override
     protected void onResume() {

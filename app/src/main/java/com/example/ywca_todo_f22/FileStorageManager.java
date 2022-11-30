@@ -21,17 +21,24 @@ public class FileStorageManager {
     // delete one todo -
 
     static String fileName = "ToDo.txt";
-
-
     public void writeToDo(ToDo todo, Context context){
         FileOutputStream fos;// ObjectOutputStream
         ObjectOutputStream oos;
         try {
             fos = context.openFileOutput(fileName,Context.MODE_APPEND);
-//            oos = new ObjectOutputStream(fos);
-//            oos.writeObject(todo);
-
             fos.write((todo.task+"&"+todo.task_date+"$").getBytes());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public void deleteAllToDos(Context context){
+        FileOutputStream fos;// ObjectOutputStream
+        ObjectOutputStream oos;
+        try {
+            fos = context.openFileOutput(fileName,Context.MODE_PRIVATE);
+            fos.write((" ").getBytes());
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -39,7 +46,6 @@ public class FileStorageManager {
             e.printStackTrace();
         }
     }
-
 
     public ArrayList<ToDo> readAllToDos(Context context){
         ArrayList<ToDo> allTodosFromTheFile = new ArrayList<>(0);
@@ -52,9 +58,11 @@ public class FileStorageManager {
             while (( read = inputStreamReader.read() ) != -1){
                  stringBuffer.append((char)read);
             }
-            Log.d("ToDoApp",stringBuffer.toString());
+            allTodosFromTheFile = fromStringToTodoLists(stringBuffer.toString());
             // As you lab
             // convert file content into an array list of todos
+            // substring
+
 
             // ascii code of the saved char
             // the end of the file will read -1
@@ -71,5 +79,28 @@ public class FileStorageManager {
 
     }
 
+    private ArrayList<ToDo> fromStringToTodoLists(String fileContent){
+        //Assignment 3&13/12/2022$Walk The dog &29/11/2022$Task3&8/12/2022$
+        //[Assignment 3, 13/12/2022]
+        // [Walk The dog ,29/11/2022]
+        //[Task3,8/12/2022]
+        int firstIndex = 0;
+        ArrayList<ToDo> list = new ArrayList<>(0);
+        char[] charArray = fileContent.toCharArray();
+        for (int i = 0 ;i< charArray.length;i++){
+            if (charArray[i] == '$'){
+                // substring (firstindex , i-1);
+                String task = fileContent.substring(firstIndex,i);
+                list.add(ToDo.fromStringToTodo(task));
+                Log.d("todo app" , task);
+                firstIndex = i + 1;
+            }
+        }
+    return list;
+    }
 
+
+
+
+    //
 }

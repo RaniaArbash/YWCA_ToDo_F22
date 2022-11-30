@@ -45,4 +45,20 @@ public class ToDo implements Parcelable {
         parcel.writeString(task_date);
         parcel.writeByte((byte) (isCompleted == null ? 0 : isCompleted ? 1 : 2));
     }
+
+    public static ToDo fromStringToTodo(String todostring){
+        //Assignment 3&13/12/2022
+        ToDo newTodo= null;
+        char[] todoCharArray = todostring.toCharArray();
+        for (int i = 0 ;i<todoCharArray.length;i++){
+            if (todoCharArray[i] == '&'){
+                String task = todostring.substring(0,i);
+                String date = todostring.substring(i+1, todoCharArray.length);
+                newTodo = new ToDo(task,date, false);
+                break;
+            }
+        }
+        return newTodo;
+
+    }
 }

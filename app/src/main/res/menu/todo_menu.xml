@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 <item android:id="@+id/toRecyclerView" android:title="@string/recycler_list"/>
+    <item android:id="@+id/deleteAllToDo" android:title="Delete All Tasks"/>
+
 </menu>
