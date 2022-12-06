@@ -3,23 +3,41 @@ package com.example.ywca_todo_f22;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+
+@Entity
 public class ToDo implements Parcelable {
+    @PrimaryKey(autoGenerate = true)
+    int id;
 
     String task;
     String task_date;
     Boolean isCompleted;
+    int isNormal;// normal = 0 , urgent = 1
 
-    public ToDo(String task, String task_date, Boolean isCompleted) {
+    @Ignore
+    public ToDo( String task, String task_date, Boolean isCompleted) {
         this.task = task;
         this.task_date = task_date;
         this.isCompleted = isCompleted;
     }
 
+    public ToDo( String task, String task_date, Boolean isCompleted, int isNormal) {
+        this.task = task;
+        this.task_date = task_date;
+        this.isCompleted = isCompleted;
+        this.isNormal = isNormal;
+    }
+
     protected ToDo(Parcel in) {
+        id = in.readInt();
         task = in.readString();
         task_date = in.readString();
         byte tmpIsCompleted = in.readByte();
         isCompleted = tmpIsCompleted == 0 ? null : tmpIsCompleted == 1;
+        isNormal = in.readInt();
     }
 
     public static final Creator<ToDo> CREATOR = new Creator<ToDo>() {
@@ -41,9 +59,12 @@ public class ToDo implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(id);
         parcel.writeString(task);
         parcel.writeString(task_date);
         parcel.writeByte((byte) (isCompleted == null ? 0 : isCompleted ? 1 : 2));
+        parcel.writeInt(isNormal);
+
     }
 
     public static ToDo fromStringToTodo(String todostring){

@@ -3,6 +3,8 @@ package com.example.ywca_todo_f22;
 import android.app.Application;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MyApp extends Application {
 
@@ -12,6 +14,8 @@ public class MyApp extends Application {
     FileStorageManager fileStorageManager = new FileStorageManager();
     private ArrayList<ToDo> listOfToDos;
 
+    DBManager dbManager = new DBManager();
+    static public ExecutorService executorService = Executors.newFixedThreadPool(4);
 
     public ArrayList<ToDo> getList(){
         if (listOfToDos == null) {

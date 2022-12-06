@@ -21,12 +21,19 @@ import android.widget.ListView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class MainActivity extends AppCompatActivity
-        implements AddNewToDoFragment.FragmentListener {
+        implements AddNewToDoFragment.FragmentListener,
+        DBManager.DataBaseListener
+        {
 
     FloatingActionButton addToDo;
     ActivityResultLauncher<Intent> secondActivityLauncher;
     ToDoListBaseAdapter adapter ;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,26 +43,25 @@ public class MainActivity extends AppCompatActivity
         this.setTitle("ToDo App");
         addToDo = findViewById(R.id.addButton);
 
-        ((MyApp)getApplication()).setList(
-                ((MyApp)getApplication()).fileStorageManager.
-                        readAllToDos(this));
-
         adapter = new ToDoListBaseAdapter(
                 ((MyApp)getApplication()).getList(),
                 this);
         todoList.setAdapter(adapter);
 
+        // read all todo from the file
+      //  ((MyApp)getApplication()).setList(
+        //       ((MyApp)getApplication()).fileStorageManager.
+          //              readAllToDos(this));
+
 
         addToDo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                //Intent toAddToDo = new Intent(MainActivity.this,AddToDoActivity.class);
-              // secondActivityLauncher.launch(toAddToDo);
-            AddNewToDoFragment fragment =  new AddNewToDoFragment();
-            fragment.listener = MainActivity.this;
-            fragment.show(getSupportFragmentManager(),"");
-
+                Intent toAddToDo = new Intent(MainActivity.this,AddToDoActivity.class);
+                secondActivityLauncher.launch(toAddToDo);
+          //  AddNewToDoFragment fragment =  new AddNewToDoFragment();
+           // fragment.listener = MainActivity.this;
+            //fragment.show(getSupportFragmentManager(),"");
 
             }
         });
@@ -67,7 +73,7 @@ public class MainActivity extends AppCompatActivity
                         if (result.getResultCode() == MyApp.SaveCode){
                             Intent resultIntent = result.getData();
                             ToDo newToDo =  resultIntent.getExtras().getParcelable("newtodo");
-                            ((MyApp)getApplication()).fileStorageManager.writeToDo(newToDo,MainActivity.this);
+                            //((MyApp)getApplication()).fileStorageManager.writeToDo(newToDo,MainActivity.this);
                             ((MyApp)getApplication()).addNewToDO(newToDo);
                             adapter.list = ((MyApp)getApplication()).getList();
                             adapter.notifyDataSetChanged();
@@ -121,9 +127,6 @@ public class MainActivity extends AppCompatActivity
                     }
                 });
                 builder.create().show();
-
-
-
                 break;
 
         }
@@ -133,11 +136,14 @@ public class MainActivity extends AppCompatActivity
 
     void showTheAlert(ToDo td){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(R.string.alert_msg);
+        builder.setMessage("Did You Finish This Task " +td.task + "?");
         builder.setNegativeButton(R.string.alert_no,null);
         builder.setPositiveButton(R.string.alert_yes,new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 td.isCompleted = true;
+                // update db
+                ((MyApp)getApplication()).dbManager.updateToDo(td);
+
                 adapter.list = ((MyApp)getApplication()).getList();
                 adapter.notifyDataSetChanged();
             }
@@ -150,16 +156,32 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        adapter.notifyDataSetChanged();
-
+        // read all todo from the DB
+        ((MyApp)getApplication()).dbManager.getDB(getApplicationContext());
+        ((MyApp)getApplication()).dbManager.listener = this;
+        ((MyApp)getApplication()).dbManager.getAllToDo();
     }
 
     @Override
     public void saveNewToDo(ToDo newtodo) {
         ((MyApp)getApplication()).addNewToDO(newtodo);
-        ((MyApp)getApplication()).fileStorageManager.writeToDo(newtodo,MainActivity.this);
+        //((MyApp)getApplication()).fileStorageManager.writeToDo(newtodo,MainActivity.this);
 
         adapter.list = ((MyApp)getApplication()).getList();
         adapter.notifyDataSetChanged();
     }
-}
+
+            @Override
+            public void insertingToDoCompleted() {
+
+            }
+
+            @Override
+            public void gettingToDosCompleted(ToDo[] list) {
+                ArrayList<ToDo> dblist = new ArrayList<>(Arrays.asList(list));
+                ((MyApp)getApplication()).setList(dblist);
+                adapter.list = dblist;
+                adapter.notifyDataSetChanged();
+
+            }
+        }

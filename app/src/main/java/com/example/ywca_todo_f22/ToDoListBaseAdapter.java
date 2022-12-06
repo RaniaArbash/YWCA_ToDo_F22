@@ -1,6 +1,7 @@
 package com.example.ywca_todo_f22;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,8 +54,18 @@ public class ToDoListBaseAdapter extends BaseAdapter {
             todoImage.setImageResource(R.drawable.incomplete);
 
 
-        todoTask.setText(list.get(i).task);
-        todoDate.setText(list.get(i).task_date);
+        if (list.get(i).isNormal == 0){
+            todoTask.setTextColor( context.getResources().getColor(R.color.green,null));
+            todoDate.setTextColor( context.getResources().getColor(R.color.green,null));
+            todoTask.setText(list.get(i).task);
+            todoDate.setText(list.get(i).task_date);
+        }else {
+            todoTask.setTextColor( context.getResources().getColor(R.color.red,null));
+            todoDate.setTextColor( context.getResources().getColor(R.color.red,null));
+            todoTask.setText(list.get(i).task);
+            todoDate.setText(list.get(i).task_date);
+        }
+
 
         return v;
     }
