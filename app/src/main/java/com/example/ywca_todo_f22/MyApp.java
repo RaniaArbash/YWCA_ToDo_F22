@@ -2,6 +2,8 @@ package com.example.ywca_todo_f22;
 
 import android.app.Application;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -10,6 +12,8 @@ public class MyApp extends Application {
 
     static int SaveCode = 1;
     static int CancelCode = 0;
+    FirebaseFirestore db;
+    FireStoreManager fireStorageManager = new FireStoreManager();
 
     FileStorageManager fileStorageManager = new FileStorageManager();
     private ArrayList<ToDo> listOfToDos;

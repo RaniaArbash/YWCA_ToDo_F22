@@ -20,6 +20,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,6 +41,8 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        FirebaseApp.initializeApp(this);
+        ((MyApp)getApplication()).db = FirebaseFirestore.getInstance();
         ListView todoList = findViewById(R.id.todoList);
         this.setTitle("ToDo App");
         addToDo = findViewById(R.id.addButton);
@@ -57,11 +61,11 @@ public class MainActivity extends AppCompatActivity
         addToDo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent toAddToDo = new Intent(MainActivity.this,AddToDoActivity.class);
-                secondActivityLauncher.launch(toAddToDo);
-          //  AddNewToDoFragment fragment =  new AddNewToDoFragment();
-           // fragment.listener = MainActivity.this;
-            //fragment.show(getSupportFragmentManager(),"");
+               // Intent toAddToDo = new Intent(MainActivity.this,AddToDoActivity.class);
+              //  secondActivityLauncher.launch(toAddToDo);
+            AddNewToDoFragment fragment =  new AddNewToDoFragment();
+            fragment.listener = MainActivity.this;
+            fragment.show(getSupportFragmentManager(),"");
 
             }
         });
@@ -164,7 +168,9 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void saveNewToDo(ToDo newtodo) {
-        ((MyApp)getApplication()).addNewToDO(newtodo);
+
+        ((MyApp)getApplication()).fireStorageManager.insertNewToDoToFireStore( ((MyApp)getApplication()).db , newtodo);
+      //  ((MyApp)getApplication()).addNewToDO(newtodo);
         //((MyApp)getApplication()).fileStorageManager.writeToDo(newtodo,MainActivity.this);
 
         adapter.list = ((MyApp)getApplication()).getList();
