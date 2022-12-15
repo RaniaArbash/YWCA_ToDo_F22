@@ -12,6 +12,9 @@ public class ToDo implements Parcelable {
     @PrimaryKey(autoGenerate = true)
     int id;
 
+    @Ignore
+    String firestoreDocID;
+
     String task;
     String task_date;
     Boolean isCompleted;
@@ -24,6 +27,13 @@ public class ToDo implements Parcelable {
         this.isCompleted = isCompleted;
     }
 
+    @Ignore
+    public ToDo( String docID, String task, String task_date, Boolean isCompleted) {
+       this.firestoreDocID = docID;
+        this.task = task;
+        this.task_date = task_date;
+        this.isCompleted = isCompleted;
+    }
     public ToDo( String task, String task_date, Boolean isCompleted, int isNormal) {
         this.task = task;
         this.task_date = task_date;

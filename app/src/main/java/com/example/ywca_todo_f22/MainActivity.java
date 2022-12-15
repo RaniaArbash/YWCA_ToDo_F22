@@ -28,7 +28,7 @@ import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity
         implements AddNewToDoFragment.FragmentListener,
-        DBManager.DataBaseListener
+        DBManager.DataBaseListener, FireStoreManager.FirestoreCallBackInterface
         {
 
     FloatingActionButton addToDo;
@@ -41,8 +41,13 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
         FirebaseApp.initializeApp(this);
         ((MyApp)getApplication()).db = FirebaseFirestore.getInstance();
+        ((MyApp)getApplication()).fireStorageManager.listener = this;
+        ((MyApp)getApplication()).fireStorageManager.getAllNotCompletedTasks(((MyApp)getApplication()).db);
+
         ListView todoList = findViewById(R.id.todoList);
         this.setTitle("ToDo App");
         addToDo = findViewById(R.id.addButton);
@@ -146,10 +151,14 @@ public class MainActivity extends AppCompatActivity
             public void onClick(DialogInterface dialog, int id) {
                 td.isCompleted = true;
                 // update db
-                ((MyApp)getApplication()).dbManager.updateToDo(td);
+               // ((MyApp)getApplication()).dbManager.updateToDo(td);
 
-                adapter.list = ((MyApp)getApplication()).getList();
-                adapter.notifyDataSetChanged();
+                // update firestore db
+                ((MyApp)getApplication()).fireStorageManager.updateToDoWithCompletion(
+                        ((MyApp)getApplication()).db,
+                        td);
+
+
             }
         });
         builder.create().show();
@@ -161,9 +170,15 @@ public class MainActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         // read all todo from the DB
-        ((MyApp)getApplication()).dbManager.getDB(getApplicationContext());
-        ((MyApp)getApplication()).dbManager.listener = this;
-        ((MyApp)getApplication()).dbManager.getAllToDo();
+//        ((MyApp)getApplication()).dbManager.getDB(getApplicationContext());
+//        ((MyApp)getApplication()).dbManager.listener = this;
+//        ((MyApp)getApplication()).dbManager.getAllToDo();
+//
+
+        // read all todos from firestore
+        ((MyApp)getApplication()).fireStorageManager.listener = this;
+        ((MyApp)getApplication()).fireStorageManager.getAllToDoFromFireStore( ((MyApp)getApplication()).db);
+
     }
 
     @Override
@@ -173,8 +188,7 @@ public class MainActivity extends AppCompatActivity
       //  ((MyApp)getApplication()).addNewToDO(newtodo);
         //((MyApp)getApplication()).fileStorageManager.writeToDo(newtodo,MainActivity.this);
 
-        adapter.list = ((MyApp)getApplication()).getList();
-        adapter.notifyDataSetChanged();
+
     }
 
             @Override
@@ -188,6 +202,30 @@ public class MainActivity extends AppCompatActivity
                 ((MyApp)getApplication()).setList(dblist);
                 adapter.list = dblist;
                 adapter.notifyDataSetChanged();
+
+            }
+
+            @Override
+            public void newToDoInserted() {
+               // update the list
+                ((MyApp)getApplication()).fireStorageManager.getAllToDoFromFireStore( ((MyApp)getApplication()).db);
+
+            }
+
+            @Override
+            public void getAllToDosCompleted(ArrayList<ToDo> list) {
+                ((MyApp)getApplication()).setList(list);
+                adapter.list = list;
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void todoUpdatedInFireStore() {
+                ((MyApp)getApplication()).fireStorageManager.getAllToDoFromFireStore( ((MyApp)getApplication()).db);
+            }
+
+            @Override
+            public void todoDeletedInFireStore() {
 
             }
         }

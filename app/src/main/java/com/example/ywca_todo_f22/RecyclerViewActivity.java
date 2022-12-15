@@ -9,21 +9,25 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
-public class RecyclerViewActivity extends AppCompatActivity
-    implements ToDoListRecyclerAdapter.itemCallBackInterface
-{
+import java.util.ArrayList;
 
+public class RecyclerViewActivity extends AppCompatActivity
+    implements ToDoListRecyclerAdapter.itemCallBackInterface,
+        FireStoreManager.FirestoreCallBackInterface
+
+{
+    ToDoListRecyclerAdapter adapter;
     RecyclerView recyclerView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recycler_view);
         this.setTitle(getString(R.string.title));
-
         recyclerView =  findViewById(R.id.recyclerList);
         //LinearLayoutManager linearLayoutManager = new LinearLayoutManager()
+        ((MyApp)getApplication()).fireStorageManager.listener = this;
 
-        ToDoListRecyclerAdapter adapter = new ToDoListRecyclerAdapter(
+        adapter = new ToDoListRecyclerAdapter(
                 ((MyApp)getApplication()).getList(),
                 this);
         adapter.listener = this;
@@ -51,8 +55,11 @@ public class RecyclerViewActivity extends AppCompatActivity
                 //Remove swiped item from list and notify the RecyclerView
                 int position = viewHolder.getAdapterPosition();
 
-                ((MyApp)getApplication()).getList().remove(position);
-                adapter.notifyDataSetChanged();
+                //((MyApp)getApplication()).getList().remove(position);
+                ((MyApp)getApplication()).fireStorageManager.deleteOneToDo(((MyApp)getApplication()).db,
+                        ((MyApp)getApplication()).getList().remove(position)
+                        );
+
 
             }
         };
@@ -70,5 +77,28 @@ public class RecyclerViewActivity extends AppCompatActivity
     public void onItemClicked(int pos) {
        ToDo td =  ((MyApp)getApplication()).getList().get(pos);
         Toast.makeText(this,td.task + "-" + td.task_date ,Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void newToDoInserted() {
+
+    }
+
+    @Override
+    public void getAllToDosCompleted(ArrayList<ToDo> list) {
+        ((MyApp)getApplication()).setList(list);
+        adapter.list = list;
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void todoUpdatedInFireStore() {
+
+    }
+
+    @Override
+    public void todoDeletedInFireStore() {
+        ((MyApp)getApplication()).fireStorageManager.getAllToDoFromFireStore( ((MyApp)getApplication()).db);
+
     }
 }
